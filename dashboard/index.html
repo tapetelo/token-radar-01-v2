@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar: pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip-link" href="#board">Skip to the board</a>
+<header class="top">
+  <span class="brand"><span class="dot"></span>Token Radar</span>
+  <span class="snap" id="snapLine">Snapshot loading…</span>
+</header>
+<main id="board" tabindex="-1">
+  <section class="hero">
+    <div>
+      <h1 id="headline">Pre-token protocols, ranked by implied value</h1>
+      <p class="lede" id="lede">Every protocol in the snapshot that records no token, priced off the tokens that already trade — not off a list of names.</p>
+    </div>
+    <dl class="stats" id="stats"></dl>
+  </section>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="board" class="on">Board</button>
+    <button data-tab="farm">Farm · Thin · Skip</button>
+    <button data-tab="comps">The comps</button>
+  </nav>
+
+  <section class="controls" id="controls">
+    <label>Search <input id="q" type="search" placeholder="Name, category or chain" autocomplete="off"></label>
+    <label>Category <select id="cat"><option value="">All categories</option></select></label>
+    <label>Chain <select id="chain"><option value="">All chains</option></select></label>
+    <label>Verdict <select id="verdict"><option value="">All verdicts</option><option value="farm">Farm</option><option value="thin">Thin</option><option value="skip">Skip</option></select></label>
+    <label>Sort <select id="sort"><option value="implied">Implied value</option><option value="tvl">TVL</option><option value="growth">7-day growth</option><option value="net">Net value</option><option value="age">Age</option></select></label>
+    <span class="count" id="rowCount"></span>
+  </section>
+
+  <section id="view"></section>
+
+  <section class="method" id="method">
+    <h2>How the value is priced</h2>
+    <p><strong>The curve.</strong> The comparables are the snapshot&rsquo;s own live-token protocols that a pre-token protocol can resemble: no exchange, no bridge, no liquid-staking product, no versioned pool, no wrapped or staked name. A least-squares line is fitted on them in logs, <code>log10(market cap) = a + b &times; log10(TVL)</code>, and refitted from the snapshot on every run. The fitted numbers are printed below the board.</p>
+    <p><strong>The tilts.</strong> The curve value is moved by the protocol&rsquo;s own seven-day TVL growth (clamped to &minus;60%…+120%, each point worth 0.15%) and by how long it has run with no token (a factor from 0.90 for the youngest to 1.10 after three years). Both are bounded on purpose: the curve does the pricing, the tilts only nudge it.</p>
+    <p><strong>The blind test.</strong> Before the curve prices anything it is tested blind: it is fitted on protocols listed before 2025-01-01 and asked to price the ones listed after it, through the same pipeline the board uses, and the same question is repeated on five shuffled folds. The median miss of that test is the band around every implied value, up and down. The test&rsquo;s numbers are printed below the board.</p>
+    <p><strong>The farm plan.</strong> Each plan is costed at the band&rsquo;s low end. The airdrop is assumed to be 7% of the implied value, shared among the farmers, who are assumed to hold 2% of the protocol&rsquo;s TVL; the plan&rsquo;s gas is $32 ($8 to set up, $16 across eight weekly actions, $4 to exit, $4 of buffer). Net value is gross minus gas. <strong>Farm</strong> at $20 net or more, <strong>thin</strong> at $0 or more, <strong>skip</strong> below $0. If farmers held 5% of TVL instead of 2%, every net value would fall by 60% and most farm verdicts would turn thin — the assumption is the whole ballgame, so it is stated here, not buried.</p>
+    <p><strong>What &ldquo;no token&rdquo; means.</strong> A protocol is on this board when its DefiLlama record carries no token — no market cap, no CoinGecko id, no symbol. That is what the record says, never proof it has none: a protocol may still have a token its record does not carry. Implied value is this radar&rsquo;s own claim about what a token would be worth if the protocol&rsquo;s record stayed as it is. It does not predict whether or when a token is issued.</p>
+    <p class="fine" id="methodNumbers">Model numbers load with the board data.</p>
+  </section>
+
+  <footer class="foot">
+    <p>Token Radar &middot; built from one sealed DefiLlama protocol snapshot &middot; the board, the comps and the plans all come from that snapshot&rsquo;s own figures.</p>
+  </footer>
+</main>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
